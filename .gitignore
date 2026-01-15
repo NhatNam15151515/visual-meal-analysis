@@ -15,7 +15,7 @@ venv/
 *.pt
 models/*/weights/
 
-# Data (quá lớn, download riêng)
+# Data (quá lớn, download riêng https://www.kaggle.com/datasets/nutritionverse/nutritionverse-real)
 data/nutritionverse-manual/
 yolo_dataset/
 
