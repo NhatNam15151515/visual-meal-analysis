@@ -1,0 +1,28 @@
+# NutritionVerse Food Analysis Pipeline
+# Python 3.8+ required
+
+# Core ML/DL frameworks
+torch>=2.0.0
+torchvision>=0.15.0
+
+# YOLOv8 for segmentation
+ultralytics>=8.0.0
+
+# Image processing
+opencv-python>=4.8.0
+Pillow>=9.0.0
+
+# Data handling
+numpy>=1.24.0
+pandas>=2.0.0
+
+# MiDaS dependencies (automatically handled by torch.hub)
+timm>=0.9.0
+
+# Utilities
+tqdm>=4.65.0
+matplotlib>=3.7.0
+scipy>=1.10.0
+
+# Optional: for GPU acceleration
+# Install CUDA-compatible torch from: https://pytorch.org/get-started/locally/

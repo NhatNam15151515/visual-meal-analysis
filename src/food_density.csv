@@ -1,0 +1,36 @@
+food_type,density_g_per_cm3,notes
+asian-pear,0.58,Quả lê châu Á - mật độ thấp do cấu trúc xốp
+captain-crunch-granola-bar,0.45,Thanh granola - mật độ thấp do nhiều không khí
+carrot,1.04,Cà rốt tươi - mật độ cao do chứa nhiều nước
+chicken-breast,1.05,Ức gà nấu chín - mật độ cao
+chicken-leg,1.02,Đùi gà - mật độ cao có xương
+chicken-sandwich,0.55,Sandwich gà - mật độ trung bình do bánh mì xốp
+chicken-wing,0.95,Cánh gà chiên
+chocolate-granola-bar,0.48,Thanh granola chocolate
+corn,0.72,Bắp ngô - mật độ trung bình
+costco-california-sushi-roll-1,1.05,Sushi roll California - nén chặt
+costco-egg,1.03,Trứng luộc - mật độ cao
+costco-salad-sushi-roll-1,0.95,Sushi roll salad
+costco-shrimp-sushi-roll-1,1.02,Sushi roll tôm
+crispy-pork-rib,0.85,Sườn heo giòn - có xương
+cucumber-piece,0.96,Dưa chuột tươi - chứa nhiều nước
+french-fry,0.35,Khoai tây chiên - mật độ rất thấp do xốp
+half-bread-loaf,0.30,Bánh mì - rất xốp
+hamburger,0.65,Hamburger - kết hợp nhiều thành phần
+lamb-shank,1.08,Cẳng cừu - có xương và thịt đặc
+lasagna,0.95,Lasagna - lớp mì và pho mát nén
+lobster,1.05,Tôm hùm - vỏ cứng và thịt đặc
+meatball,1.10,Viên thịt - nén chặt
+nature-valley-granola-bar,0.42,Thanh ngũ cốc Nature Valley
+plain-toast,0.28,Bánh mì nướng - rất xốp do mất nước
+pork-feet,0.95,Chân giò heo - có xương và da
+red-apple,0.85,Táo đỏ - mật độ trung bình
+rib,0.90,Sườn - có xương
+salad-chicken-strip,0.98,Thịt gà xắt lát cho salad
+salmon-nigiri,1.02,Sushi cá hồi
+shrimp-nigiri,1.00,Sushi tôm
+stack-of-tofu-4pc,0.80,Đậu phụ - mật độ thấp do xốp
+steak,1.05,Bít tết bò - thịt đặc
+toast-with-strawberry-jam,0.35,Bánh mì với mứt - xốp
+tuna-nigiri,1.08,Sushi cá ngừ - cá chặt
+veal-kebab-piece,1.02,Thịt bê xiên que
