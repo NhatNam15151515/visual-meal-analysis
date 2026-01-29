@@ -27,16 +27,17 @@ import torch
 from ultralytics import YOLO
 
 from .config import (
-    ANNOTATIONS_FILE,
-    IMAGES_DIR,
+    DATA_DIR,
+    DATA_YAML,
     MODELS_DIR,
     OUTPUT_DIR,
-    SPLITS_FILE,
-    TIER1_CONFIG,
-    YOLO_DATASET_DIR,
+    TRAIN_CONFIG,
     ensure_directories,
     get_device,
 )
+
+# Alias cho backward compatibility
+TIER1_CONFIG = TRAIN_CONFIG
 
 
 class FoodSegmentationResult:
@@ -249,17 +250,30 @@ class Tier1FoodSegmentation:
                 0.5 * np.array(color) + 0.5 * overlay[mask_bool]
             ).astype(np.uint8)
             
-            # Vẽ bounding box
-            x1, y1, x2, y2 = result.bbox.astype(int)
-            cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
+            # Vẽ đường viền (contour) bao quanh đối tượng thay vì bbox
+            contours, _ = cv2.findContours(result.mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cv2.drawContours(img, contours, -1, color, 2)
             
+            # Tính toán vị trí label (dùng đỉnh cao nhất của contour)
+            if contours:
+                # Tìm điểm cao nhất (y nhỏ nhất)
+                c = max(contours, key=cv2.contourArea)
+                top_point = tuple(c[c[:, :, 1].argmin()][0])
+                label_x, label_y = top_point
+                label_y = max(label_y - 10, 20) # Padding
+            else:
+                # Fallback về bbox nếu lỗi contour
+                x1, y1, x2, y2 = result.bbox.astype(int)
+                label_x, label_y = x1, y1 - 10
+
             # Vẽ label
             label = f"{result.class_name}: {result.confidence:.2f}"
-            (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 1)
-            cv2.rectangle(img, (x1, y1 - th - 10), (x1 + tw, y1), color, -1)
+            (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 1)
+            # Vẽ background cho text để dễ đọc
+            cv2.rectangle(img, (label_x, label_y - th - 5), (label_x + tw, label_y + 5), color, -1)
             cv2.putText(
-                img, label, (x1, y1 - 5),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1
+                img, label, (label_x, label_y),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 1
             )
         
         # Blend overlay
@@ -350,12 +364,24 @@ class COCOToYOLOConverter:
             # Mặc định 80% train, 20% val
             file_to_split = None
         
-        # Tạo mapping category_id -> index liên tục (bỏ qua category 0 nếu là parent)
-        category_ids = sorted([c["id"] for c in self.coco_data["categories"] if c["id"] != 0])
+        # Tạo mapping category_id -> index liên tục (bỏ qua category 0 và excluded categories)
+        # Lọc bỏ các category không phổ biến ở châu Á
+        excluded_cat_ids = set()
+        for cat in self.coco_data["categories"]:
+            if cat["name"] in EXCLUDED_CATEGORIES:
+                excluded_cat_ids.add(cat["id"])
+                print(f"[Converter] Loại bỏ category: {cat['name']} (id={cat['id']})")
+        
+        category_ids = sorted([
+            c["id"] for c in self.coco_data["categories"] 
+            if c["id"] != 0 and c["id"] not in excluded_cat_ids
+        ])
         self.cat_id_to_yolo_id = {cat_id: idx for idx, cat_id in enumerate(category_ids)}
+        self.excluded_cat_ids = excluded_cat_ids
         
         # Danh sách tên class theo thứ tự YOLO
         class_names = [self.categories[cat_id]["name"] for cat_id in category_ids]
+        print(f"[Converter] Số classes sau khi lọc: {len(class_names)}")
         
         # Chuyển đổi từng ảnh
         train_count, val_count = 0, 0
@@ -393,8 +419,8 @@ class COCOToYOLOConverter:
                 for ann in annotations:
                     cat_id = ann["category_id"]
                     
-                    # Bỏ qua category 0 (parent class)
-                    if cat_id == 0 or cat_id not in self.cat_id_to_yolo_id:
+                    # Bỏ qua category 0 (parent class) và excluded categories
+                    if cat_id == 0 or cat_id in self.excluded_cat_ids or cat_id not in self.cat_id_to_yolo_id:
                         continue
                     
                     yolo_class_id = self.cat_id_to_yolo_id[cat_id]
@@ -470,6 +496,7 @@ class Tier1Trainer:
         self,
         data_yaml: Union[str, Path],
         resume: bool = False,
+        name: str = "yolov8_food_seg",
     ) -> str:
         """
         Fine-tune model YOLOv8-seg.
@@ -477,6 +504,7 @@ class Tier1Trainer:
         Args:
             data_yaml: Đường dẫn đến file data.yaml
             resume: Tiếp tục training từ checkpoint
+            name: Tên project cho training
         
         Returns:
             str: Đường dẫn đến best model weights
@@ -486,10 +514,12 @@ class Tier1Trainer:
         
         # Training
         print(f"[Trainer] Bắt đầu training với config:")
+        print(f"  - Data: {data_yaml}")
         print(f"  - Epochs: {self.config['epochs']}")
         print(f"  - Batch size: {self.config['batch_size']}")
         print(f"  - Image size: {self.config['imgsz']}")
         print(f"  - Device: {self.device}")
+        print(f"  - Project name: {name}")
         
         results = model.train(
             data=str(data_yaml),
@@ -498,16 +528,29 @@ class Tier1Trainer:
             imgsz=self.config["imgsz"],
             device=self.device,
             project=str(MODELS_DIR),
-            name="yolov8_food_seg",
+            name=name,
             patience=self.config["patience"],
             lr0=self.config["learning_rate"],
             resume=resume,
             plots=True,
             save=True,
+            workers=self.config.get("workers", 8),  # Tận dụng CPU
+            # Data Augmentation
+            mosaic=self.config.get("mosaic", 1.0),
+            mixup=self.config.get("mixup", 0.0),
+            copy_paste=self.config.get("copy_paste", 0.0),
+            scale=self.config.get("scale", 0.5),
+            fliplr=self.config.get("fliplr", 0.5),
+            hsv_h=self.config.get("hsv_h", 0.015),
+            hsv_s=self.config.get("hsv_s", 0.7),
+            hsv_v=self.config.get("hsv_v", 0.4),
+            degrees=self.config.get("degrees", 0.0),
+            translate=self.config.get("translate", 0.1),
+            close_mosaic=self.config.get("close_mosaic", 10),
         )
         
         # Tìm best model
-        best_model_path = MODELS_DIR / "yolov8_food_seg" / "weights" / "best.pt"
+        best_model_path = MODELS_DIR / name / "weights" / "best.pt"
         print(f"[Trainer] Training hoàn thành!")
         print(f"[Trainer] Best model: {best_model_path}")
         

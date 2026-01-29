@@ -146,61 +146,73 @@ class FoodDensityDatabase:
         """Khởi tạo bảng mật độ mặc định."""
         # Giá trị tham khảo từ USDA và tài liệu
         defaults = {
-            # Trái cây
-            "apple": 0.85,
-            "red-apple": 0.85,
-            "asian-pear": 0.58,
-            "orange": 0.92,
+            # PHASE 1 & 2 CLASSES
+            # Rice & Grains
+            "rice": 1.15,
+            "fried-rice": 0.85,
+            "beef-bowl": 0.95,
+            "mixed-rice": 0.95,
+            "eels-on-rice": 0.95,         # Phase 2
+            "pilaf": 0.75,                # Phase 2
+            "tempura-bowl": 0.85,         # Phase 2
+            "rice-ball": 1.10,            # Phase 2
+            "sashimi-bowl": 0.95,         # Phase 2
+            "sushi-bowl": 0.95,           # Phase 2
+            "curry-rice": 1.05,
             
-            # Rau củ
-            "carrot": 1.04,
-            "cucumber": 0.96,
-            "cucumber-piece": 0.96,
-            "corn": 0.72,
+            # Noodles
+            "udon-noodle": 0.85,
+            "soba-noodle": 0.85,
+            "ramen-noodle": 0.90,
+            "beef-noodle": 0.95,
+            "fried-noodle": 0.85,
+            "spaghetti": 0.90,
+            "spaghetti-meat-sauce": 0.95,
+            "dipping-noodles": 0.85,      # Phase 2
+            "tempura-udon": 0.88,         # Phase 2
+
+            # Breads & Fast Food
+            "toast": 0.35,
+            "french-fries": 0.45,
+            "croissant": 0.25,            # Phase 2 (Light/Airy)
+            "roll-bread": 0.30,           # Phase 2
+            "sandwich": 0.55,             # Phase 2
+            "pizza-toast": 0.50,          # Phase 2
+            "hot-dog": 0.70,              # Phase 2
+            "pizza": 0.65,                # Phase 2
+            "hamburger": 0.65,            # Phase 2 (Bun)
+
+            # Soups
+            "miso-soup": 1.01,
+            "pork-miso-soup": 1.05,
+            "chinese-soup": 1.01,
+            "stew": 1.05,
+            "potage": 1.02,               # Phase 2
+            "chowder": 1.05,              # Phase 2
             
-            # Thịt
-            "chicken-breast": 1.05,
-            "chicken-leg": 1.02,
-            "chicken-wing": 0.95,
-            "steak": 1.05,
-            "lamb-shank": 1.08,
-            "pork-feet": 0.95,
-            "rib": 0.90,
-            "crispy-pork-rib": 0.85,
-            "meatball": 1.10,
-            "veal-kebab-piece": 1.02,
+            # Mains (Meat/Fish)
+            "fried-chicken": 0.85,        # Fried/Breaded
+            "yakitori": 0.95,
+            "roast-chicken": 1.00,
+            "hambarg-steak": 1.05,        # Meat patty
+            "beef-steak": 1.08,
+            "sweet-and-sour-pork": 1.05,
+            "stir-fried-beef-and-peppers": 1.00,
+            "fried-fish": 0.85,
+            "grilled-salmon": 1.02,
+            "sashimi": 1.05,
+            "fried-shrimp": 0.80,
+            "omelet": 0.90,               # Phase 2
+            "cold-tofu": 0.95,            # Phase 2
             
-            # Hải sản
-            "lobster": 1.05,
-            "shrimp-nigiri": 1.00,
-            "salmon-nigiri": 1.02,
-            "tuna-nigiri": 1.08,
-            
-            # Bánh mì & tinh bột
-            "bread": 0.30,
-            "half-bread-loaf": 0.30,
-            "plain-toast": 0.28,
-            "toast-with-strawberry-jam": 0.35,
-            "french-fry": 0.35,
-            "lasagna": 0.95,
-            
-            # Fast food
-            "hamburger": 0.65,
-            "chicken-sandwich": 0.55,
-            
-            # Sushi
-            "costco-california-sushi-roll-1": 1.05,
-            "costco-salad-sushi-roll-1": 0.95,
-            "costco-shrimp-sushi-roll-1": 1.02,
-            
-            # Khác
-            "tofu": 0.80,
-            "stack-of-tofu-4pc": 0.80,
-            "costco-egg": 1.03,
-            "salad-chicken-strip": 0.98,
-            "nature-valley-granola-bar": 0.42,
-            "captain-crunch-granola-bar": 0.45,
-            "chocolate-granola-bar": 0.48,
+            # Sides / Veggies
+            "sauteed-vegetables": 0.85,
+            "green-salad": 0.35,          # Leafy -> Low density
+            "potato-salad": 1.10,
+            "sauteed-spinach": 0.80,      # Phase 2
+            "macaroni-salad": 1.05,       # Phase 2
+            "goya-chanpuru": 0.90,        # Phase 2
+            "vegetable-tempura": 0.60,    # Phase 2 (Batter)
         }
         
         self.density_map = defaults

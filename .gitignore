@@ -16,7 +16,7 @@ venv/
 models/*/weights/
 
 # Data (quá lớn, download riêng https://www.kaggle.com/datasets/nutritionverse/nutritionverse-real)
-data/nutritionverse-manual/
+data/
 yolo_dataset/
 
 # Outputs
@@ -32,3 +32,5 @@ runs/
 Thumbs.db
 # SpecStory explanation file
 .specstory
+# SpecStory explanation file
+.specstory/.what-is-this.md

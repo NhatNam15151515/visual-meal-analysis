@@ -19,8 +19,7 @@ import numpy as np
 import pandas as pd
 
 from .config import (
-    IMAGES_DIR,
-    METADATA_FILE,
+    DATA_DIR,
     OUTPUT_DIR,
     ensure_directories,
 )
@@ -338,7 +337,7 @@ class NutritionVersePipeline:
             label = f"{item.class_name}: {item.weight_grams:.0f}g"
             cv2.putText(
                 img, label, (x1, y1 - 5),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
+                cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 4
             )
 
         # Blend

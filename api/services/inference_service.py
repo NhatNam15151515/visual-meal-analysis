@@ -1,29 +1,36 @@
 import subprocess
 import json
-import os
+from pathlib import Path
 
-IMAGE_DIR = "data/images"
-INFERENCE_SCRIPT = "run_inference.py"
+# Sử dụng đường dẫn tuyệt đối
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+IMAGE_DIR = PROJECT_ROOT / "data" / "images"
+INFERENCE_SCRIPT = PROJECT_ROOT / "run_inference.py"
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "inference_results"
 FILENAME = "meal"
 
-os.makedirs(IMAGE_DIR, exist_ok=True)
+IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 def save_image(file) -> str:
     """Lưu ảnh upload."""
     ext = file.filename.split(".")[-1]
-    path = os.path.join(IMAGE_DIR, f"{FILENAME}.{ext}")
+    path = IMAGE_DIR / f"{FILENAME}.{ext}"
     with open(path, "wb") as f:
         f.write(file.file.read())
-    return path
+    return str(path)
 
 async def run_pipeline(image):
     # 1. Lưu ảnh
     image_path = save_image(image)
     
     # 2. Gọi pipeline
-    RESULT_JSON = f"outputs/inference_results/{FILENAME}_analysis.json"
-    subprocess.run(["python", INFERENCE_SCRIPT, "--image", image_path], check=True)
+    subprocess.run(
+        ["python", str(INFERENCE_SCRIPT), "--image", image_path],
+        check=True,
+        cwd=str(PROJECT_ROOT)  # Chạy từ thư mục project root
+    )
 
-    # 3. Đọc kết quả
-    with open(RESULT_JSON, "r", encoding="utf-8") as f:
+    # 3. Đọc kết quả - file được lưu theo tên ảnh
+    result_json = OUTPUT_DIR / f"{FILENAME}_analysis.json"
+    with open(result_json, "r", encoding="utf-8") as f:
         return json.load(f)

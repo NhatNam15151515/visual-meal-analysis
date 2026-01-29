@@ -9,9 +9,11 @@ Hệ thống phân tích bữa ăn từ hình ảnh sử dụng:
 """
 
 from .config import (
-    TIER1_CONFIG,
-    TIER2_CONFIG,
-    TIER3_CONFIG,
+    TRAIN_CONFIG,
+    DEPTH_CONFIG,
+    WEIGHT_CONFIG,
+    CLASS_NAMES,
+    NUM_CLASSES,
     ensure_directories,
     get_device,
 )
@@ -19,7 +21,6 @@ from .tier1_segmentation import (
     FoodSegmentationResult,
     Tier1FoodSegmentation,
     Tier1Trainer,
-    COCOToYOLOConverter,
 )
 from .tier2_depth_volume import (
     DepthVolumeResult,
@@ -36,19 +37,20 @@ from .pipeline import (
     NutritionVersePipeline,
 )
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __all__ = [
     # Config
-    "TIER1_CONFIG",
-    "TIER2_CONFIG", 
-    "TIER3_CONFIG",
+    "TRAIN_CONFIG",
+    "DEPTH_CONFIG", 
+    "WEIGHT_CONFIG",
+    "CLASS_NAMES",
+    "NUM_CLASSES",
     "ensure_directories",
     "get_device",
     # Tier 1
     "FoodSegmentationResult",
     "Tier1FoodSegmentation",
     "Tier1Trainer",
-    "COCOToYOLOConverter",
     # Tier 2
     "DepthVolumeResult",
     "Tier2DepthVolume",
@@ -61,3 +63,4 @@ __all__ = [
     "MealAnalysisResult",
     "NutritionVersePipeline",
 ]
+
